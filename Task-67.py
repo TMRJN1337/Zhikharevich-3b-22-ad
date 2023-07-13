@@ -1,20 +1,31 @@
 import sqlite3
 
-
+# Создаем базу данных
 conn = sqlite3.connect('books.db')
 cursor = conn.cursor()
-cursor.execute("""CREATE TABLE IF NOT EXISTS books(
-    name TEXT,
-    author TEXT,
-    year INTEGER
-)""")
-books = [("War and Peace", " Leo Tolstoy", 1869), ("Fairy Tale", 'Stephen King', 2022),
-         ('Life of Pee', 'Sally Magnusson', 2009), ('The Master and Margarita', 'Mikhail Bulgakov', 1967)]
-cursor.executemany("INSERT INTO books VALUES(?, ?, ?);", books)
-conn.commit()
 
-cursor.execute("SELECT * FROM books where year > 2000;")
-all_books = cursor.fetchall()
-for book in all_books:
-    print(f'Название: {book[0]}, Автор: {book[1]}, Год выпуска: {book[2]}')
+# Создаем таблицу книг
+cursor.execute('''CREATE TABLE IF NOT EXISTS books
+                  (title TEXT, author TEXT, year INTEGER)''')
+
+# Добавляем книги в таблицу
+books = [('Метро 2033', 'Дмитрий Глуховский', 2005),
+         ('Три товарища', 'Эрих Мария Ремарк', 1936),
+         ('12 стульев', 'Илья Ильф и Евгений Петров', 1928),
+         ('Мастер и Маргарита', 'Михаил Булгаков', 1967),
+         ('А зори здесь тихие...', 'Борис Васильев', 1969),
+         ('Алхимик', 'Пауло Коэльо', 1988),
+         ('Остров Сахалин', 'Антон Чехов', 1893),
+         ('Война и мир', 'Лев Толстой', 1869),
+         ('Преступление и наказание', 'Федор Достоевский', 1866),
+         ('Отцы и дети', 'Иван Тургенев', 1862)]
+cursor.executemany("INSERT INTO books VALUES (?, ?, ?)", books)
+
+# Выводим все книги, выпущенные после 2000 года
+cursor.execute("SELECT * FROM books WHERE year > 2000")
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
+
+# Закрываем соединение с базой данных
 conn.close()
