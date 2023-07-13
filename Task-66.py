@@ -1,20 +1,24 @@
 import sqlite3
 
-
-conn = sqlite3.connect('students.dp')
-
+# Создаем базу данных
+conn = sqlite3.connect('students.db')
 cursor = conn.cursor()
-cursor.execute("""CREATE TABLE IF NOT EXISTS students(
-   name TEXT,
-   age INTEGER,
-   average_score REAL
-)""")
-students = [("PETR", 20, 4.4), ('ANTON', 21, 3), ('KIRILL', 22, 4)]
-cursor.executemany("INSERT INTO students VALUES(?, ?, ?);", students)
-conn.commit()
 
-cursor.execute("SELECT * FROM students;")
-all_students = cursor.fetchall()
-for student in all_students:
-    print(f'Имя: {student[0]}, Возраст: {student[1]}, Средний балл: {student[2]}')
+# Создаем таблицу студентов
+cursor.execute('''CREATE TABLE IF NOT EXISTS students
+                  (name TEXT, age INTEGER, average_score REAL)''')
+
+# Добавляем данные о студентах в таблицу
+students = [('Иванов Иван', 20, 4.5),
+            ('Петрова Анна', 19, 4.2),
+            ('Сидоров Павел', 21, 4.8),
+            ('Козлова Екатерина', 20, 4.6),
+            ('Смирнов Дмитрий', 19, 4.3)]
+cursor.executemany("INSERT INTO students VALUES (?, ?, ?)", students)
+
+# Выводим все данные о студентах
+cursor.execute("SELECT * FROM students")
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
 conn.close()
