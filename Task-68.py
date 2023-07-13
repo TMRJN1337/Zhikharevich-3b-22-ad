@@ -1,22 +1,30 @@
 import sqlite3
 
+# Создаем базу данных
 conn = sqlite3.connect('movies.db')
 cursor = conn.cursor()
-cursor.execute("""CREATE TABLE IF NOT EXISTS movies(
-    name TEXT,
-    genre TEXT,
-    rating REAL
-)""")
-movies = [('The Green Mile', 'drama', 9.2), ('It Follows', 'horror', 6.8),
-          ('Black Panther', 'adventure', 7.3), ('Step Brothers', 'comedy', 6.9)]
-cursor.executemany("INSERT INTO movies VALUES(?, ?, ?);", movies)
-conn.commit()
 
+# Создаем таблицу фильмов
+cursor.execute('''CREATE TABLE IF NOT EXISTS movies
+                  (title TEXT, genre TEXT, rating REAL)''')
 
-flag = input("Выберите жанр (drama, horror, adventure, comedy): ")
-cursor.execute("SELECT * FROM movies;")
-all_movies = cursor.fetchall()
-for movie in all_movies:
-    if movie[1] == flag:
-        print(f'Название: {movie[0]}, Жанр: {movie[1]}, Оценка: {movie[2]}')
+# Добавляем фильмы в таблицу
+movies = [('The Shawshank Redemption', 'Drama', 9.3),
+          ('The Godfather', 'Crime', 9.2),
+          ('The Dark Knight', 'Action', 9.0),
+          ('12 Angry Men', 'Drama', 8.9),
+          ('Schindler\'s List', 'Biography', 8.9),
+          ('The Lord of the Rings: The Return of the King', 'Adventure', 8.9),
+          ('Pulp Fiction', 'Crime', 8.9),
+          ('The Good, the Bad and the Ugly', 'Western', 8.8),
+          ('Fight Club', 'Drama', 8.8),
+          ('Forrest Gump', 'Drama', 8.8)]
+cursor.executemany("INSERT INTO movies VALUES (?, ?, ?)", movies)
+
+# Выводим все фильмы выбранного жанра
+genre = 'Drama'
+cursor.execute("SELECT * FROM movies WHERE genre=?", (genre,))
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
 conn.close()
